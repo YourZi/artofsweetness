@@ -1,0 +1,18 @@
+{
+  "art_of_sweetness.item.slots": "%s 槽位",
+  "art_of_sweetness.item.goodAt": "擅长:",
+  "art_of_sweetness.item.goodAt": "不擅长:",
+  "art_of_sweetness.item.notGoodAt": "擅长:",
+  "attribute.art_of_sweetness.power": "魔法效能",
+  "attribute.art_of_sweetness.cooldown_rate": "冷却",
+
+  "art_of_sweetness.aspect.white": "白",
+  "art_of_sweetness.aspect.red": "红",
+  "art_of_sweetness.aspect.yellow": "黄",
+  "art_of_sweetness.aspect.blue": "蓝",
+  "art_of_sweetness.aspect.green": "绿",
+  
+  "magic.art_of_sweetness:empty.name": "空",
+  "magic.art_of_sweetness:unknown.name": "未知",
+  "magic.art_of_sweetness:icing_shot.name": "冰霜射击"
+}
