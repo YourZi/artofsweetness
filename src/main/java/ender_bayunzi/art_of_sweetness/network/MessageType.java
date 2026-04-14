@@ -4,7 +4,8 @@ import java.util.concurrent.Callable;
 
 public enum MessageType {
 	keyUp(() -> new MessageKeyUP()),
-	keyDown(() -> new MessageKeyDown());
+	keyDown(() -> new MessageKeyDown()),
+	syncMagicList(() -> new MessageSyncMagicList());
 	
 	public final Callable<IFMessage> callable;
 	

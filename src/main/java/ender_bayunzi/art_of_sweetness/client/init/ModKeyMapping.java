@@ -4,11 +4,13 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import ender_bayunzi.art_of_sweetness.ArtOfSweetness;
 import ender_bayunzi.art_of_sweetness.client.gui.MagicSelectionGui;
+import ender_bayunzi.art_of_sweetness.item.MagicItem;
 import ender_bayunzi.art_of_sweetness.network.MessageCreater;
 import ender_bayunzi.art_of_sweetness.network.MessageKeyDown;
 import ender_bayunzi.art_of_sweetness.network.MessageKeyUP;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.InteractionHand;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -33,7 +35,7 @@ public class ModKeyMapping {
 		if (event.getAction() == 1) {
 			if (key == up.getKey().getValue()) PacketDistributor.sendToServer(new MessageCreater(new MessageKeyUP()));
 			if (key == down.getKey().getValue()) PacketDistributor.sendToServer(new MessageCreater(new MessageKeyDown()));
-			if (key == ui.getKey().getValue()) mc.setScreen(new MagicSelectionGui());
+			if (key == ui.getKey().getValue() && mc.player != null && mc.player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof MagicItem) mc.setScreen(new MagicSelectionGui());
 		}
 	}
 	

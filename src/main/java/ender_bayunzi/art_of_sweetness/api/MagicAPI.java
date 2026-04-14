@@ -5,6 +5,7 @@ import java.util.List;
 
 import ender_bayunzi.art_of_sweetness.init.ModAttachmentTypes;
 import ender_bayunzi.art_of_sweetness.init.ModDataComponentTypes;
+import ender_bayunzi.art_of_sweetness.item.MagicItem;
 import ender_bayunzi.art_of_sweetness.magic.Magic;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -53,7 +54,7 @@ public class MagicAPI {
 	}
 	
 	public static APIResult setMagic(ItemStack stack, int slot, Magic magic) {
-		if (stack == null || magic == null) return APIResult.FAIL;
+		if (stack == null || magic == null || (stack.getItem() instanceof MagicItem item && !item.properties.canSetSlotTo(slot, magic))) return APIResult.FAIL;
 		Magic[] magicArray = MagicAPI.getMagicList(stack);
 		if (slot < 0 || slot >= magicArray.length) return APIResult.FAIL;
 		magicArray[slot] = magic;

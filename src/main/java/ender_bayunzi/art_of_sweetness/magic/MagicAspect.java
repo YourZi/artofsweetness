@@ -5,11 +5,11 @@ import net.minecraft.network.chat.MutableComponent;
 
 public enum MagicAspect {
 
-	WHITE("white", 0XFFFFFF, 0, 1f),
-	RED("red", 0XFF0000, 1, 0f),
-	YELLOW("yellow", 0XFFFF00, 2, 0f),
-	BLUE("blue", 0X0000FF, 3, 0f),
-	GREEN("green", 0X00FF00, 4, 0f);
+	WHITE("white", 0XFFFFFF, 1, 1f),
+	RED("red", 0XFF0000, 0, 0f),
+	YELLOW("yellow", 0XFFFF00, 0, 0f),
+	BLUE("blue", 0X0000FF, 0, 0f),
+	GREEN("green", 0X00FF00, 0, 0f);
 	
 	public String id;
 	public int color;
