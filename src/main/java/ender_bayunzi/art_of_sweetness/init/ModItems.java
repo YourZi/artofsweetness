@@ -18,7 +18,7 @@ public class ModItems {
 			DeferredRegister.create(Registries.ITEM, ArtOfSweetness.MODID);
 
 	public static final Supplier<Item> exampleMagicItem = REGISTRY.register("example_magic_item", 
-			() -> new MagicItem(7, 25, -0.1f, new MagicAspect[] {MagicAspect.GREEN,MagicAspect.RED}, new MagicAspect[] {MagicAspect.BLUE}) {
+			() -> new MagicItem(7, 25, 0.1f, new MagicAspect[] {MagicAspect.GREEN,MagicAspect.RED}, new MagicAspect[] {MagicAspect.BLUE}) {
 			
 				public static Component toColorComponent(String string) {
 					MutableComponent component = Component.empty();

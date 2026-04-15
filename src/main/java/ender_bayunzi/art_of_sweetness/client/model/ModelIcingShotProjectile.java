@@ -19,9 +19,9 @@ import ender_bayunzi.art_of_sweetness.ArtOfSweetness;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 public class ModelIcingShotProjectile<T extends Entity> extends EntityModel<T> {
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(ArtOfSweetness.MODID, "model_icing_shot_projectile"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(ArtOfSweetness.MODID, "model_icing_shot_projectile"), "main");	
 	public final ModelPart bb_main;
-
+    
 	public ModelIcingShotProjectile(ModelPart root) {
 		this.bb_main = root.getChild("bb_main");
 	}

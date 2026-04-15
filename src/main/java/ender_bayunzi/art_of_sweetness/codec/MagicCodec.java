@@ -18,7 +18,7 @@ public class MagicCodec implements Codec<Magic> {
 
 	@Override
 	public <T> DataResult<Pair<Magic, T>> decode(DynamicOps<T> ops, T input) {
-		return DataResult.success(Pair.of(ModRegistries.MagicAddCallback.magicMap.getOrDefault(ops.getStringValue(input).getOrThrow(), ModMagic.EMPTY.get()), input));
+		return DataResult.success(Pair.of(ModRegistries.MagicAddCallback.magicMap.getOrDefault(ops.getStringValue(input).getOrThrow(), ModMagic.empty), input));
 	}
 
 }

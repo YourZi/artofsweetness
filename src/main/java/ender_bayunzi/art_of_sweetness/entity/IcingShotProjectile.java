@@ -38,7 +38,7 @@ public class IcingShotProjectile extends ThrowableProjectile {
 	public void tick() {
 		super.tick();
 		
-		if (tickCount % 3 == 0) this.level().broadcastEntityEvent(this, (byte) 3);
+		if (this.level().isClientSide) this.level().addParticle(ParticleTypes.ITEM_SNOWBALL, this.getX(), this.getY(), this.getZ(), this.getDeltaMovement().x, this.getDeltaMovement().y, this.getDeltaMovement().z);
 	}
 
 	@Override

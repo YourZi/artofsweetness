@@ -70,6 +70,7 @@ public class MagicAPI {
 	}
 	
 	public static Magic[] getMagicList(ItemStack stack) {
+		if (!stack.has(ModDataComponentTypes.MAGICLIST) && stack.getItem() instanceof MagicItem magic) stack.set(ModDataComponentTypes.MAGICLIST, Arrays.asList(magic.properties.getMagicInstances()));
 		return stack.get(ModDataComponentTypes.MAGICLIST).toArray(new Magic[0]);
 	}
 	

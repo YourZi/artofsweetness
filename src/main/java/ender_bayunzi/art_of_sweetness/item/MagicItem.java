@@ -51,10 +51,16 @@ public class MagicItem extends Item {
 	
 	@Override
 	public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-		if (!stack.has(ModDataComponentTypes.MAGICLIST))
-			stack.set(ModDataComponentTypes.MAGICLIST, Arrays.asList(this.properties.getMagicInstances()));
-		if (!stack.has(ModDataComponentTypes.MAGICINDEX))
-			stack.set(ModDataComponentTypes.MAGICINDEX, 0);
+		if (entity instanceof LivingEntity living) {
+			if (living instanceof Player player && player.isCreative()) return;
+			
+			List<Magic> knownMagic = MagicAPI.getLearnedMagic(living);
+			Magic[] magicArray = MagicAPI.getMagicList(stack);
+			for (int i = 0; i < magicArray.length; i++) {
+				Magic magic = magicArray[i];
+				if (magic != ModMagic.empty && !knownMagic.contains(magic)) MagicAPI.setMagic(stack, i, ModMagic.unknown);
+			}
+		}
 	}
 	
 	@Override
@@ -165,6 +171,8 @@ public class MagicItem extends Item {
 			this.notGoodAt = notGoodAt;
 			this.goodAtList = Arrays.asList(this.goodAt);
 			this.notGoodAtList = Arrays.asList(this.notGoodAt);
+			
+			this.component(ModDataComponentTypes.MAGICINDEX, 0);
 		}
 		
 		public MagicItemProperties setSlotMagic(int index, Supplier<Magic> magic, boolean lock) {
@@ -199,7 +207,7 @@ public class MagicItem extends Item {
 		public Properties attributes(ItemAttributeModifiers attributes) {
 			attributes.forEach(EquipmentSlot.MAINHAND, (var1, var2) -> {
 				if (var1 == ModAttributes.COOLDOWN_RATE)
-					this.cooldrate += var2.amount();
+					this.cooldrate -= var2.amount();
 				if (var1 == ModAttributes.POWER)
 					this.power += var2.amount();
 			});
@@ -209,7 +217,7 @@ public class MagicItem extends Item {
 		
 		public MagicItemProperties createAttributes(float power, float cooldownRate) {
 			this.power += power;
-			this.cooldrate += cooldownRate;
+			this.cooldrate -= cooldownRate;
 			
 			super.attributes(ItemAttributeModifiers.builder()
 					.add(ModAttributes.POWER, new AttributeModifier(BASE_POWER_ID, power, Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)

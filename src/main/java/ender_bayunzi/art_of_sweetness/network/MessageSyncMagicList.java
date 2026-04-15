@@ -32,8 +32,7 @@ public class MessageSyncMagicList implements IFMessage {
 
 	@Override
 	public void toBytes(FriendlyByteBuf buf) {
-		buf.writeJsonWithCodec(ModCodec.magic_list(0, 7), this.list);
-		
+		buf.writeJsonWithCodec(ModCodec.magic_list(0, 7), this.list);	
 	}
 
 	@Override

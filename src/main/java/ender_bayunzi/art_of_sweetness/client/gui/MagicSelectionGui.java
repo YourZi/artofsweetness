@@ -3,6 +3,7 @@ package ender_bayunzi.art_of_sweetness.client.gui;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -28,7 +29,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 public class MagicSelectionGui extends Screen {
 
-	private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(ArtOfSweetness.MODID, "textures/gui/selection_gui.png");
+	public static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(ArtOfSweetness.MODID, "textures/gui/selection_gui.png");
 	public static final Minecraft mc = Minecraft.getInstance();
 	
 	private final boolean[] options = new boolean[5];
@@ -61,7 +62,7 @@ public class MagicSelectionGui extends Screen {
 		this.magicList = MagicAPI.getMagicList(stack);
 		
 		Arrays.fill(this.options, true);
-		Arrays.fill(this.showMagicList, ModMagic.EMPTY.get());
+		Arrays.fill(this.showMagicList, ModMagic.empty);
 	
 		MagicAspect[] notGoddAt = this.properties.notGoodAt;
 		
@@ -93,8 +94,8 @@ public class MagicSelectionGui extends Screen {
 		List<Magic> knownMagic = MagicAPI.getLearnedMagic(player);
 		
 		for (Magic magic : ModRegistries.MagicAddCallback.magicMap.values()) {
-			if (magic != ModMagic.EMPTY.get() 
-					&& magic != ModMagic.UNKNOWN.get()) {
+			if (magic != ModMagic.empty 
+					&& magic != ModMagic.unknown) {
 				List<MagicAspect> aspects = Arrays.asList(magic.aspects());
 				
 				if (!options[0] && aspects.contains(MagicAspect.WHITE)) continue;
@@ -104,7 +105,7 @@ public class MagicSelectionGui extends Screen {
 				if (!options[4] && aspects.contains(MagicAspect.GREEN)) continue;
 				
 				if (knownMagic.contains(magic) || player.isCreative()) magicList.add(magic);
-				else magicList.add(ModMagic.UNKNOWN.get());
+				else magicList.add(ModMagic.unknown);
 			}
 		}
 		
@@ -115,7 +116,7 @@ public class MagicSelectionGui extends Screen {
 			int index = firstIndex + i;
 			Magic magic;
 			if (index >= 0 && index < magicList.size()) magic = magicList.get(index);
-			else magic = ModMagic.EMPTY.get();
+			else magic = ModMagic.empty;
 			this.showMagicList[i] = magic;
 		}
 		
@@ -133,7 +134,7 @@ public class MagicSelectionGui extends Screen {
 		for (int i = 0; i < this.button.length; i++) {
 			int index = i;
 			this.addWidget(button[i] = Button.builder(Component.empty(), (btn) -> {
-				if (this.showMagicList[index] != ModMagic.EMPTY.get() && this.showMagicList[index] != ModMagic.UNKNOWN.get() && this.selectIndex >= 0 && this.selectIndex < 7 && this.properties.canSetSlotTo(this.selectIndex, this.showMagicList[index])) {
+				if (this.showMagicList[index] != ModMagic.empty && this.showMagicList[index] != ModMagic.unknown && this.selectIndex >= 0 && this.selectIndex < 7 && this.properties.canSetSlotTo(this.selectIndex, this.showMagicList[index])) {
 					this.magicList[this.selectIndex] = this.showMagicList[index];
 					this.selectIndex = -1;
 				}
@@ -178,6 +179,8 @@ public class MagicSelectionGui extends Screen {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		
+		boolean tooltipRendered = false;
+		
 		for (int i = 0; i < this.options.length; i++) {
 			if (this.options[i]) guiGraphics.blit(GUI, this.backgroundX + 180, this.backgroundY + i * 9, 180, 9 * i, 25, 8, 256, 256);
 			else guiGraphics.blit(GUI, this.backgroundX + 180, this.backgroundY + i * 9, 205, 9 * i, 8, 8, 256, 256);
@@ -190,11 +193,18 @@ public class MagicSelectionGui extends Screen {
 			int y = button.getY();
 			
 			Magic magic = this.showMagicList[i];
-			if (magic != ModMagic.EMPTY.get()) {
+			if (magic != ModMagic.empty) {
 				guiGraphics.blit(GUI, x, y, 180, 44, 26, 26, 256, 256);
 				ResourceLocation icon = magic.icon();
 				if (icon != null) guiGraphics.blit(icon, x + 5, y + 5, 0, 0, 16, 16, 16, 16);
 				else guiGraphics.blit(GUI, x + 5, y + 5, 211, 49, 16, 16, 256, 256);
+				
+				if (x <= mouseX && mouseX <= x + button.getWidth()
+				&& y <= mouseY && mouseY <= y + button.getHeight()
+				&& !tooltipRendered) {
+					renderMagicTooltip(magic, guiGraphics, mouseX, mouseY);
+					tooltipRendered = true;
+				}
 			}
 		}
 		
@@ -209,16 +219,29 @@ public class MagicSelectionGui extends Screen {
 				guiGraphics.blit(GUI, x + 3, y + 2, 188, 103, 10, 12, 256, 256);
 			} else {
 				Magic magic = this.magicList[i];
-				if (magic != ModMagic.EMPTY.get()) {
+				if (magic != ModMagic.empty) {
 					ResourceLocation icon = magic.icon();
 					if (icon != null) guiGraphics.blit(icon, x, y, 0, 0, 16, 16, 16, 16);
 					else guiGraphics.blit(GUI, x, y, 211, 49, 16, 16, 256, 256);
+					
+					if (x <= mouseX && mouseX <= x + 16
+					&& y <= mouseY && mouseY <= y + 16
+					&& !tooltipRendered) {
+						renderMagicTooltip(magic, guiGraphics, mouseX, mouseY);
+						tooltipRendered = true;
+					}
 				}
 				if (this.properties.locked[i]) guiGraphics.blit(GUI, x - 1, y - 1, 184, 126, 18, 18, 256, 256);
 			}
 		}
 		
 		RenderSystem.disableBlend();
+	}
+	
+	public void renderMagicTooltip(Magic magic, GuiGraphics guiGraphics, int mouseX, int mouseY) {
+		List<Component> components = new ArrayList<Component>();
+		magic.tooltip(this.player.getItemInHand(InteractionHand.MAIN_HAND), this.player, components);
+		guiGraphics.renderTooltip(font, components, Optional.empty(), mouseX, mouseY);
 	}
 	
 	@Override
@@ -237,7 +260,7 @@ public class MagicSelectionGui extends Screen {
 				int x = this.backgroundX + 10 + 24 * i;
 				int y = this.backgroundY + (i % 2 == 0 ? 143 : 133);
 				if (mouseX >= x && mouseY >= y && mouseX < x + 16 && mouseY < y + 16) {
-					this.magicList[i] = ModMagic.EMPTY.get();
+					this.magicList[i] = ModMagic.empty;
 					return true;
 				}
 			}

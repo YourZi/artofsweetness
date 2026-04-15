@@ -17,8 +17,11 @@ public class ModMagic {
 	public static final DeferredRegister<Magic> REGISTRY = 
 			DeferredRegister.create(ModResourceKeys.MAGIC_REGISTRY_KEY, ArtOfSweetness.MODID);
 
-	public static final Supplier<Magic> EMPTY = REGISTRY.register("empty", () -> new SimpleMagic(MagicType.Unknown, new MagicAspect[0]));
-	public static final Supplier<Magic> UNKNOWN = REGISTRY.register("unknown", () -> new SimpleMagic(MagicType.Unknown, new MagicAspect[0]));
+	public static final Magic empty = new SimpleMagic(MagicType.Unknown, new MagicAspect[0]);
+	public static final Magic unknown = new SimpleMagic(MagicType.Unknown, new MagicAspect[0]);
+	
+	public static final Supplier<Magic> EMPTY = REGISTRY.register("empty", () -> empty);
+	public static final Supplier<Magic> UNKNOWN = REGISTRY.register("unknown", () -> unknown);
 	
 	public static final Supplier<Magic> ICING_SHOT = REGISTRY.register("icing_shot", 
 			() -> new SimpleMagic(MagicType.Instant, new MagicAspect[] {MagicAspect.WHITE}).power(5).cooldown(30).sm(5).icon(ResourceLocation.fromNamespaceAndPath(ArtOfSweetness.MODID, "textures/magic/icing_shot.png")).action((stack, level, living, time) -> {
@@ -29,7 +32,7 @@ public class ModMagic {
 					projectile.setOwner(living);
 					projectile.setSilent(true);
 					projectile.setPos(living.getEyePosition().add(living.getLookAngle()));
-					projectile.shoot(living.getViewVector(1).x, living.getViewVector(1).y, living.getViewVector(1).z, power / 4F, 0);
+					projectile.shoot(living.getViewVector(1).x, living.getViewVector(1).y, living.getViewVector(1).z, Math.min(power / 4F, 2), 0);
 					level.addFreshEntity(projectile);
 				}
 			}));
