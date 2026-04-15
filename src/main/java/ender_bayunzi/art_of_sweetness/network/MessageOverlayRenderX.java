@@ -30,8 +30,8 @@ public class MessageOverlayRenderX implements IFMessage {
 
 	@Override
 	public void run(IPayloadContext ctx) {
-		MagicListOverlay.midRenderX += this.renderX;
-		MagicListOverlay.lastMidRenderX += this.renderX;
+		// 客户端统一通过 overlay 管理动画状态，网络只负责转发环绕补偿
+		MagicListOverlay.shiftAnimation(this.renderX);
 	}
 
 }

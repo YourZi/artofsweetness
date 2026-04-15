@@ -28,10 +28,12 @@ public class MessageKeyDown implements IFMessage {
 		Player player = ctx.player();
 		ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 		if (!stack.isEmpty() && stack.getItem() instanceof MagicItem magic) {
-			int index = MagicAPI.getMagicIndex(stack) + 1;
-			if (index >= magic.properties.slots) {
-				index -= magic.properties.slots;
-				if (player instanceof ServerPlayer sp) PacketDistributor.sendToPlayer(sp, new MessageCreater(new MessageOverlayRenderX(magic.properties.slots * -16)));
+			int currentIndex = MagicAPI.getMagicIndex(stack);
+			int index = MagicAPI.getNextEquippedMagicIndex(stack, currentIndex);
+			if (index < 0 || index == currentIndex) return;
+			if (index <= currentIndex && player instanceof ServerPlayer sp) {
+				// 发生首尾环绕时通知客户端补一整圈位移让滚动动画保持首尾相接
+				PacketDistributor.sendToPlayer(sp, new MessageCreater(new MessageOverlayRenderX(magic.properties.slots * -16)));
 			}
 			MagicAPI.setMagicIndex(stack, index);
 		}

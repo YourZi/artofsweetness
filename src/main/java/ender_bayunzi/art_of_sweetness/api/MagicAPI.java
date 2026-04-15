@@ -5,6 +5,7 @@ import java.util.List;
 
 import ender_bayunzi.art_of_sweetness.init.ModAttachmentTypes;
 import ender_bayunzi.art_of_sweetness.init.ModDataComponentTypes;
+import ender_bayunzi.art_of_sweetness.init.ModMagic;
 import ender_bayunzi.art_of_sweetness.item.MagicItem;
 import ender_bayunzi.art_of_sweetness.magic.Magic;
 import net.minecraft.world.entity.LivingEntity;
@@ -84,6 +85,31 @@ public class MagicAPI {
 		if (index < 0 || index >= magicArray.length) return APIResult.FAIL;
 		stack.set(ModDataComponentTypes.MAGICINDEX, index);
 		return APIResult.SUCESS;
+	}
+	
+	// 向后切换时跳过空槽位
+	public static int getNextEquippedMagicIndex(ItemStack stack, int currentIndex) {
+		return getOffsetEquippedMagicIndex(stack, currentIndex, 1);
+	}
+	
+	// 向前切换时跳过空槽位
+	public static int getPreviousEquippedMagicIndex(ItemStack stack, int currentIndex) {
+		return getOffsetEquippedMagicIndex(stack, currentIndex, -1);
+	}
+	
+	private static int getOffsetEquippedMagicIndex(ItemStack stack, int currentIndex, int direction) {
+		Magic[] magicArray = MagicAPI.getMagicList(stack);
+		if (magicArray.length == 0) return -1;
+		
+		int normalizedIndex = currentIndex;
+		if (normalizedIndex < 0 || normalizedIndex >= magicArray.length) normalizedIndex = 0;
+		
+		for (int step = 1; step <= magicArray.length; step++) {
+			int index = Math.floorMod(normalizedIndex + step * direction, magicArray.length);
+			if (magicArray[index] != ModMagic.empty) return index;
+		}
+		
+		return magicArray[normalizedIndex] != ModMagic.empty ? normalizedIndex : -1;
 	}
 	
 	public static Magic getCurrentMagic(LivingEntity living, ItemStack stack) {

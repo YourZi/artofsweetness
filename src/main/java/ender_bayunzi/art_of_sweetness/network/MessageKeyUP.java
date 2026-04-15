@@ -28,10 +28,11 @@ public class MessageKeyUP implements IFMessage {
 		Player player = ctx.player();
 		ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 		if (!stack.isEmpty() && stack.getItem() instanceof MagicItem magic) {
-			int index = MagicAPI.getMagicIndex(stack) - 1;
-			if (index < 0) {
-				index += magic.properties.slots;
-				if (player instanceof ServerPlayer sp) PacketDistributor.sendToPlayer(sp, new MessageCreater(new MessageOverlayRenderX(magic.properties.slots * 16)));
+			int currentIndex = MagicAPI.getMagicIndex(stack);
+			int index = MagicAPI.getPreviousEquippedMagicIndex(stack, currentIndex);
+			if (index < 0 || index == currentIndex) return;
+			if (index >= currentIndex && player instanceof ServerPlayer sp) {
+				PacketDistributor.sendToPlayer(sp, new MessageCreater(new MessageOverlayRenderX(magic.properties.slots * 16)));
 			}
 			MagicAPI.setMagicIndex(stack, index);
 		}
